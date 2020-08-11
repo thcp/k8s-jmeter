@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jmeter-master
+  name: jmeter-master
+  namespace: jmeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jmeter-master
+  template:
+    metadata:
+      labels:
+        app: jmeter-master
+    spec:
+      containers:
+        - name: jmeter-master
+          image: thclpr/jmeter-master:latest
+          imagePullPolicy: Always
+          env:
+          - name: SSL_DISABLED
+            value: "true"
+          - name: ONE_SHOT
+            value: "false"
+          - name: SLAVE_SVC_NAME
+            value: jmeter-worker
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 10m
+              memory: 8Mi
+          ports:
+          - containerPort: 60000
+            name: rmi-local-port
+            protocol: TCP
+          
